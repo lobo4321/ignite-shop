@@ -1,10 +1,9 @@
-import axios from 'axios'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import Image from 'next/future/image'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
 import Stripe from 'stripe'
+import { useShoppingCart } from '../../hooks/useShoppingCart'
 import { stripe } from '../../lib/stripe'
 import {
   ImageContainer,
@@ -24,31 +23,15 @@ interface ProductProps {
 }
 
 export default function Product({ product }: ProductProps) {
-  const [isCreatingCheckoutSession, setIsCreatingCheckiutSession] =
-    useState(false)
+  const { addToCart, checkCartItemInCart } = useShoppingCart()
+
   const { isFallback } = useRouter()
 
   if (isFallback) {
     return <p>Loading ...</p>
   }
 
-  async function handleBuyProduct() {
-    try {
-      setIsCreatingCheckiutSession(true)
-      const response = await axios.post('/api/checkout', {
-        priceId: product.defaultPriceId,
-      })
-
-      const { checkoutUrl } = response.data
-
-      window.location.href = checkoutUrl
-    } catch (err) {
-      // Conectar com uma ferramenta de observalidade (Datadog / Sentry)
-      setIsCreatingCheckiutSession(false)
-
-      alert('Falha ao redirecionar ao checkout!')
-    }
-  }
+  const itemInTheCartAlready = checkCartItemInCart(product.id)
 
   return (
     <>
@@ -68,8 +51,8 @@ export default function Product({ product }: ProductProps) {
           <p>{product.description}</p>
 
           <button
-            onClick={handleBuyProduct}
-            disabled={isCreatingCheckoutSession}
+            onClick={() => addToCart(product)}
+            disabled={itemInTheCartAlready}
           >
             Comprar agora
           </button>
@@ -109,6 +92,7 @@ export const getStaticProps: GetStaticProps<any, { id: string }> = async ({
           style: 'currency',
           currency: 'BRL',
         }).format(price.unit_amount / 100),
+        priceNumber: price.unit_amount / 100,
         description: product.description,
         defaultPriceId: price.id,
       },

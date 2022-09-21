@@ -6,6 +6,29 @@ export const HomeContainer = styled('main', {
   maxWidth: 'calc(100vw - ((100vw - 1180px) / 2))',
   marginLeft: 'auto',
   minHeight: 656,
+  position: 'relative',
+
+  button: {
+    cursor: 'pointer',
+    position: 'absolute',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    border: 0,
+    background: 'transparent',
+    color: '$gray300',
+
+    '&.right': {
+      left: 'auto',
+      right: 5,
+    },
+    '&.left': {
+      left: 5,
+    },
+
+    '&:disabled': {
+      cursor: 'not-allowed ',
+    },
+  },
 })
 
 export const Product = styled('a', {
@@ -29,7 +52,7 @@ export const Product = styled('a', {
     bottom: '0.25rem',
     left: '0.25rem',
     right: '0.25rem',
-    padding: '2rem',
+    padding: '1.5rem',
 
     borderRadius: 6,
 
@@ -54,6 +77,8 @@ export const Product = styled('a', {
   strong: {
     fontSize: '$lg',
     color: '$gray100',
+    display: 'block',
+    lineHeight: '32px',
   },
 
   span: {
@@ -61,4 +86,14 @@ export const Product = styled('a', {
     fontWeight: 'bold',
     color: '$green300',
   },
+})
+
+export const IconWrapper = styled('div', {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+
+  padding: '0.5rem',
+  background: '$green500',
+  borderRadius: 6,
 })
